@@ -1,0 +1,36 @@
+services:
+  app:
+    build: .
+    ports:
+      - "${APP_PORT:-5173}:3000"
+    environment:
+      PGHOST: db
+      PGPORT: 5432
+      PGUSER: draftroom
+      PGPASSWORD: ${POSTGRES_PASSWORD:-draftroom-local}
+      PGDATABASE: draftroom
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: draftroom
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-draftroom-local}
+      POSTGRES_DB: draftroom
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U draftroom -d draftroom"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+volumes:
+  postgres_data:

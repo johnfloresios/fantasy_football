@@ -6,14 +6,17 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
-    "test": "node --test src/draft.test.js",
+    "test": "node --test src/draft.test.js server/app.test.js",
     "preview": "vite preview --host 0.0.0.0",
-    "rankings:update": "python3 scripts/update-rankings.py"
+    "rankings:update": "python3 scripts/update-rankings.py",
+    "start": "node server/index.js"
   },
   "dependencies": {
+    "express": "^5.2.1",
+    "lucide-react": "^0.468.0",
+    "pg": "^8.23.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "lucide-react": "^0.468.0"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "vite": "^6.0.0"
